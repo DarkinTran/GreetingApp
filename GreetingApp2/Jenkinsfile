@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'  // Tên của Maven đã cấu hình trong Jenkins
+    }
+
+    environment {
+        // Đặt các biến môi trường nếu cần, ví dụ:
+        // MAVEN_HOME = '/usr/local/maven'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Kiểm tra mã nguồn từ GitHub
+                git 'https://github.com/username/repository.git'  // Thay bằng URL repository của bạn
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Chạy lệnh Maven để biên dịch dự án
+                script {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Chạy test (nếu có)
+                script {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Triển khai ứng dụng (nếu cần)
+                script {
+                    // Ví dụ: Triển khai lên một server, bạn có thể thay đổi theo nhu cầu.
+                    sh 'mvn deploy'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and deployment succeeded!'
+        }
+        failure {
+            echo 'Build or deployment failed!'
+        }
+    }
+}
